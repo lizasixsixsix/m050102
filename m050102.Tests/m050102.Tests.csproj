@@ -48,11 +48,21 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="UnitTest1.cs" />
+    <Compile Include="ExportAttributeTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\m050102.TestAssembly\m050102.TestAssembly.csproj">
+      <Project>{f0f8152e-fcb5-4552-b8c7-05e24f95faa3}</Project>
+      <Name>m050102.TestAssembly</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\m050102\m050102.csproj">
+      <Project>{d7dd8919-6713-4944-afba-7c8cccc032ea}</Project>
+      <Name>m050102</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

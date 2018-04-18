@@ -12,23 +12,26 @@ namespace m050102
 
         public Container()
         {
+            this.Registrants = new HashSet<Type>();
         }
 
-        public Container(params Assembly[] assemblies)
-        {
-            foreach (var a in assemblies)
-            {
-                this.RegisterAssembly(a);
-            }
-        }
-
-        private void RegisterAssembly(Assembly assembly)
+        public void Register(Assembly assembly)
         {
             this.Registrants = new HashSet<Type>(
                 assembly.GetTypes()
                     .Where(t => t.GetCustomAttributes(typeof(ExportAttribute),
                                         false)
                                     .Any()));
+        }
+
+        public void Register(Type type)
+        {
+            this.Registrants.Add(type);
+        }
+
+        public void Register(params Type[] types)
+        {
+            this.Registrants.UnionWith(types);
         }
     }
 }
