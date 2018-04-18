@@ -2,7 +2,7 @@
 
 namespace m050102.Attributes
 {
-    [AttributeUsage(AttributeTargets.Class, Inherited = false)]
+    [AttributeUsage(AttributeTargets.Property)]
     public class ImportAttribute : Attribute
     {
     }
