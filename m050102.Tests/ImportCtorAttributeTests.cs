@@ -1,7 +1,8 @@
-﻿using System;
-using System.Reflection;
-using m050102.TestAssembly;
+﻿using System.Reflection;
+
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+using m050102.TestAssembly;
 
 namespace m050102.Tests
 {
