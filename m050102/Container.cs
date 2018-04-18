@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Reflection;
 
@@ -24,23 +25,20 @@ namespace m050102
         {
             assembly.GetTypes()
                 .Where(t => t.IsDefined(typeof(ExportAttribute),
-                                        false)
-                            && ((ExportAttribute)t.GetCustomAttributes(typeof(ExportAttribute), false)[0]).Contract == null)
-                .ToList().ForEach(this.Register);
-
-            assembly.GetTypes()
-                .Where(t => t.IsDefined(typeof(ExportAttribute),
-                                        false)
-                            && ((ExportAttribute)t.GetCustomAttributes(typeof(ExportAttribute), false)[0]).Contract != null)
-                .ToList().ForEach(t => this.RegisterAs(((ExportAttribute)t.GetCustomAttributes(typeof(ExportAttribute), false)[0]).Contract, t));
+                    false))
+                .Select(t => new
+                {
+                    type = t,
+                    contract = ((ExportAttribute) t
+                        .GetCustomAttributes(typeof(ExportAttribute),
+                            false)
+                        [0]).Contract
+                })
+                .ToList()
+                .ForEach(t => this.Register(t.contract ?? t.type, t.type));
         }
 
-        public void Register(Type type)
-        {
-            this.Registrants.Add(type, type);
-        }
-
-        public void RegisterAs(Type contract, Type actual)
+        public void Register(Type contract, Type actual)
         {
             this.Registrants.Add(contract, actual);
         }
