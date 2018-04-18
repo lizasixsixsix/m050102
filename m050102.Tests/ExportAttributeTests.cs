@@ -10,7 +10,7 @@ namespace m050102.Tests
     public class ExportAttributeTests
     {
         [TestMethod]
-        public void LoadAssembly_ClassContained()
+        public void LoadAssembly_ClassRegistered()
         {
             var container = new Container();
 
@@ -18,7 +18,21 @@ namespace m050102.Tests
 
             container.Register(assembly);
 
-            Assert.IsNotNull(container.Registrants);
+            Assert.IsTrue(container.Registrants.ContainsKey(typeof(Foo)));
+        }
+
+        [TestMethod]
+        public void LoadAssembly_ClassRegisteredAsInterface()
+        {
+            var container = new Container();
+
+            var assembly = Assembly.Load(AssemblyReference.Name);
+
+            container.Register(assembly);
+
+            Assert.IsTrue(container.Registrants.ContainsKey(typeof(IQuux)));
+
+            Assert.IsTrue(container.Registrants.ContainsValue(typeof(Qux)));
         }
     }
 }

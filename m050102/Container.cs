@@ -23,26 +23,26 @@ namespace m050102
         public void Register(Assembly assembly)
         {
             assembly.GetTypes()
-                    .Where(t => t.IsDefined(typeof(ExportAttribute),
-                                            false))
-                    .ToList().ForEach(this.Register);
+                .Where(t => t.IsDefined(typeof(ExportAttribute),
+                                        false)
+                            && ((ExportAttribute)t.GetCustomAttributes(typeof(ExportAttribute), false)[0]).Contract == null)
+                .ToList().ForEach(this.Register);
+
+            assembly.GetTypes()
+                .Where(t => t.IsDefined(typeof(ExportAttribute),
+                                        false)
+                            && ((ExportAttribute)t.GetCustomAttributes(typeof(ExportAttribute), false)[0]).Contract != null)
+                .ToList().ForEach(t => this.RegisterAs(((ExportAttribute)t.GetCustomAttributes(typeof(ExportAttribute), false)[0]).Contract, t));
         }
 
         public void Register(Type type)
         {
             this.Registrants.Add(type, type);
-
-            this.Realizations.Add(
-                type,
-                type.GetConstructor(Type.EmptyTypes)?.Invoke(null));
         }
 
-        public void Register(params Type[] types)
+        public void RegisterAs(Type contract, Type actual)
         {
-            foreach (var t in types)
-            {
-                this.Register(t);
-            }
+            this.Registrants.Add(contract, actual);
         }
 
         public T CreateInstance<T>()
@@ -64,7 +64,7 @@ namespace m050102
                         false))
                 .ToList().ForEach(p => p.SetValue(
                     t,
-                    this.Realizations.Get(p.PropertyType),
+                    this.Realizations.Get(this.Registrants[p.PropertyType]),
                     null));
 
             return t;
@@ -77,7 +77,7 @@ namespace m050102
                 .First(c => c.GetParameters().Any());
 
             var ctorParams = firstParamCtor.GetParameters()
-                .Select(p => this.Realizations.Get(p.ParameterType))
+                .Select(p => this.Realizations.Get(this.Registrants[p.ParameterType]))
                 .ToArray();
 
             var t = (T)typeof(T).GetConstructor(

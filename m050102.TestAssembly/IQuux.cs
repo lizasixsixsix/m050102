@@ -1,6 +1,6 @@
 ﻿namespace m050102.TestAssembly
 {
-    public class Quux
+    public interface IQuux
     {
     }
 }
