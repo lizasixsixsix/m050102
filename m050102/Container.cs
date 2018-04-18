@@ -1,4 +1,5 @@
 ﻿using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -23,9 +24,8 @@ namespace m050102
         public void Register(Assembly assembly)
         {
             assembly.GetTypes()
-                    .Where(t => t.GetCustomAttributes(typeof(ExportAttribute),
-                                        false)
-                                    .Any())
+                    .Where(t => t.IsDefined(typeof(ExportAttribute),
+                                            false))
                     .ToList().ForEach(this.Register);
         }
 
@@ -47,17 +47,43 @@ namespace m050102
         }
 
         public T CreateInstance<T>()
-            where T : new()
         {
-            var t = new T();
+            T t;
+
+            if (typeof(T).IsDefined(typeof(ImportCtorAttribute),
+                false))
+            {
+                t = (T)typeof(T).GetConstructor(Type.EmptyTypes)?.Invoke(null);
+            }
+            else
+            {
+                t = CreateInstanceWithCtorParams<T>();
+            }
 
             typeof(T).GetProperties().Where(
-                p => p.GetCustomAttributes(typeof(ImportAttribute),
-                    false).Any())
+                    p => p.IsDefined(typeof(ImportAttribute),
+                        false))
                 .ToList().ForEach(p => p.SetValue(
                     t,
                     this.Realizations.Get(p.PropertyType),
                     null));
+
+            return t;
+        }
+
+        private T CreateInstanceWithCtorParams<T>()
+        {
+            var firstParamCtor = typeof(T)
+                .GetConstructors(BindingFlags.Public | BindingFlags.Instance)
+                .First(c => c.GetParameters().Any());
+
+            var ctorParams = firstParamCtor.GetParameters()
+                .Select(p => this.Realizations.Get(p.GetType()))
+                .ToArray();
+
+            var t = (T)typeof(T).GetConstructor(
+                ctorParams.Select(p => p.GetType()).ToArray())
+                ?.Invoke(ctorParams);
 
             return t;
         }

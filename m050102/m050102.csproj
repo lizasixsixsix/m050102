@@ -42,6 +42,7 @@
   <ItemGroup>
     <Compile Include="Attributes\ExportAttribute.cs" />
     <Compile Include="Attributes\ImportAttribute.cs" />
+    <Compile Include="Attributes\ImportCtorAttribute.cs" />
     <Compile Include="Container.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Realizations.cs" />

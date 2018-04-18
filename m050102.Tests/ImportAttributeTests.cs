@@ -20,6 +20,8 @@ namespace m050102.Tests
             var bar = container.CreateInstance<Bar>();
 
             Assert.IsNotNull(bar.Foo);
+
+            Assert.IsInstanceOfType(bar.Foo, typeof(Foo));
         }
     }
 }
