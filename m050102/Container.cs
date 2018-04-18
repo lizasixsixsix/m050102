@@ -1,5 +1,4 @@
 ﻿using System;
-using System.CodeDom;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -51,13 +50,13 @@ namespace m050102
             T t;
 
             if (typeof(T).IsDefined(typeof(ImportCtorAttribute),
-                false))
+                                    false))
             {
-                t = (T)typeof(T).GetConstructor(Type.EmptyTypes)?.Invoke(null);
+                t = CreateInstanceWithCtorParams<T>();
             }
             else
             {
-                t = CreateInstanceWithCtorParams<T>();
+                t = (T)typeof(T).GetConstructor(Type.EmptyTypes)?.Invoke(null);
             }
 
             typeof(T).GetProperties().Where(
@@ -78,7 +77,7 @@ namespace m050102
                 .First(c => c.GetParameters().Any());
 
             var ctorParams = firstParamCtor.GetParameters()
-                .Select(p => this.Realizations.Get(p.GetType()))
+                .Select(p => this.Realizations.Get(p.ParameterType))
                 .ToArray();
 
             var t = (T)typeof(T).GetConstructor(

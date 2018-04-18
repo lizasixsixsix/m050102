@@ -10,7 +10,7 @@ namespace m050102.Tests
     public class ExportAttributeTests
     {
         [TestMethod]
-        public void LoadAssembly_ContainerContainsMethodWithExportAttribute()
+        public void LoadAssembly_ClassContained()
         {
             var container = new Container();
 

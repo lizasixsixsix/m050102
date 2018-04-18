@@ -50,6 +50,7 @@
   <ItemGroup>
     <Compile Include="ExportAttributeTests.cs" />
     <Compile Include="ImportAttributeTests.cs" />
+    <Compile Include="ImportCtorAttributeTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
