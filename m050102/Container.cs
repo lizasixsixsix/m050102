@@ -11,13 +11,13 @@ namespace m050102
     {
         public Dictionary<Type, Type> Registrants { get; set; }
 
-        public Dictionary<Type, object> Realizations { get; set; }
+        public Realizations Realizations { get; set; }
 
         public Container()
         {
             this.Registrants = new Dictionary<Type, Type>();
 
-            this.Realizations = new Dictionary<Type, object>();
+            this.Realizations = new Realizations();
         }
 
         public void Register(Assembly assembly)
@@ -56,7 +56,7 @@ namespace m050102
                     false).Any())
                 .ToList().ForEach(p => p.SetValue(
                     t,
-                    this.Realizations[p.PropertyType],
+                    this.Realizations.Get(p.PropertyType),
                     null));
 
             return t;
